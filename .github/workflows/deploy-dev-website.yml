@@ -18,7 +18,14 @@ jobs:
 
       - name: Build Docker Image
         run: |
-          docker build -t ghcr.io/loyaltty-repos/openadmit-website:dev .
+          docker build \
+            --build-arg NEXT_PUBLIC_SANITY_PROJECT_ID=${{ secrets.NEXT_PUBLIC_SANITY_PROJECT_ID }} \
+            --build-arg NEXT_PUBLIC_SANITY_DATASET=${{ secrets.NEXT_PUBLIC_SANITY_DATASET }} \
+            --build-arg NEXT_PUBLIC_SANITY_API_VERSION=${{ secrets.NEXT_PUBLIC_SANITY_API_VERSION }} \
+            --build-arg NEXT_PUBLIC_SIGNIN_URL=${{ secrets.NEXT_PUBLIC_SIGNIN_URL }} \
+            --build-arg ZAPIER_CONTACT_WEBHOOK_URL=${{ secrets.ZAPIER_CONTACT_WEBHOOK_URL }} \
+            --build-arg NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }} \
+            -t ghcr.io/loyaltty-repos/openadmit-website:dev .
 
       - name: Push Docker Image
         run: |
