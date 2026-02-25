@@ -31,5 +31,6 @@
   "todo-tree.tree.showBadges": false,
   "[javascript]": {
     "editor.defaultFormatter": "biomejs.biome"
-  }
+  },
+  "snyk.advanced.autoSelectOrganization": true
 }

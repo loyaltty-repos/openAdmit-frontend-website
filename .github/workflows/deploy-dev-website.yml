@@ -1,0 +1,44 @@
+name: Deploy Dev - OpenAdmit Website
+
+on:
+  push:
+    branches:
+      - website_dev
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Login to GHCR
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Build Docker Image
+        run: |
+          docker build -t ghcr.io/loyaltty-repos/openadmit-website:dev .
+
+      - name: Push Docker Image
+        run: |
+          docker push ghcr.io/loyaltty-repos/openadmit-website:dev
+
+      - name: Deploy to Dev Server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.DEV_SERVER_IP }}
+          username: root
+          key: ${{ secrets.DEV_SERVER_SSH_KEY }}
+          script: |
+            docker pull ghcr.io/loyaltty-repos/openadmit-website:dev
+
+            docker stop openadmit-website-dev || true
+            docker rm openadmit-website-dev || true
+
+            docker run -d \
+              --name openadmit-website-dev \
+              --restart always \
+              -p 3000:3000 \
+              --env-file /var/www/openadmit/frontend/website/.env \
+              ghcr.io/loyaltty-repos/openadmit-website:dev
