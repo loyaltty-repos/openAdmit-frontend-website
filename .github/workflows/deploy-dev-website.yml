@@ -46,6 +46,6 @@ jobs:
             docker run -d \
               --name openadmit-website-dev \
               --restart always \
-              -p 3000:3000 \
+              -p 127.0.0.1:3000:3000 \
               --env-file /var/www/openadmit/frontend/website/.env \
               ghcr.io/loyaltty-repos/openadmit-website:dev
